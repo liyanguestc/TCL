@@ -5,7 +5,7 @@ var sizeM = 14;
 var depthCompress = 0.5;
 var radius = 25;
 var z0 = -5;
-var textradius = 1.2*radius;
+var textradius = 1.2 * radius;
 head.ready(function() {
     Init();
     animate();
@@ -53,16 +53,16 @@ function animate() {
         var curMeshGroup = meshArray[i].meshGroup;
         switch (meshArray[i].name) {
             case "tcl_t":
-                curMeshGroup.position.set(textradius*Math.cos(time+dangle), 0, depthCompress*textradius*Math.sin(time+dangle)+z0);
-                curMeshGroup.rotation.y = -time-dangle+Math.PI/2;
+                curMeshGroup.position.set(textradius * Math.cos(time + dangle), 0, depthCompress * textradius * Math.sin(time + dangle) + z0);
+                curMeshGroup.rotation.y = -time - dangle + Math.PI / 2;
                 break;
-              case "tcl_c":
-                curMeshGroup.position.set(textradius*Math.cos(time), 0, depthCompress*textradius*Math.sin(time)+z0);
-                curMeshGroup.rotation.y = -time+Math.PI/2;
+            case "tcl_c":
+                curMeshGroup.position.set(textradius * Math.cos(time), 0, depthCompress * textradius * Math.sin(time) + z0);
+                curMeshGroup.rotation.y = -time + Math.PI / 2;
                 break;
-              case "tcl_l":
-                curMeshGroup.position.set(textradius*Math.cos(time-dangle), 0, depthCompress*textradius*Math.sin(time-dangle)+z0);
-                curMeshGroup.rotation.y = -time+dangle+Math.PI/2;
+            case "tcl_l":
+                curMeshGroup.position.set(textradius * Math.cos(time - dangle), 0, depthCompress * textradius * Math.sin(time - dangle) + z0);
+                curMeshGroup.rotation.y = -time + dangle + Math.PI / 2;
                 break;
             default:
                 break;
@@ -85,46 +85,46 @@ function animate() {
 function addObjectsToScene() {
     //Add your objects here
     //API to add STL Object
-      Leia_LoadSTLModel({
+    Leia_LoadSTLModel({
         path: 'resource/tcl_t.stl',
-        color:0xff0000
-    },function(mesh){
-      mesh.scale.set(14, 14, 14);
-      var group = new THREE.Object3D();
-      group.add(mesh);
-      scene.add(group);
-      meshArray.push({
-        meshGroup: group,
-        name: 'tcl_t'
-      });
+        color: 0xff0000
+    }, function(mesh) {
+        mesh.scale.set(14, 14, 14);
+        var group = new THREE.Object3D();
+        group.add(mesh);
+        scene.add(group);
+        meshArray.push({
+            meshGroup: group,
+            name: 'tcl_t'
+        });
     });
-  
-   Leia_LoadSTLModel({
+
+    Leia_LoadSTLModel({
         path: 'resource/tcl_c.stl',
-        color:0xff0000
-    },function(mesh){
-      mesh.scale.set(sizeM, sizeM, sizeM*0.4);
-      var group = new THREE.Object3D();
-      group.add(mesh);
-      scene.add(group);
-      meshArray.push({
-        meshGroup: group,
-        name: 'tcl_c'
-      });
+        color: 0xff0000
+    }, function(mesh) {
+        mesh.scale.set(sizeM, sizeM, sizeM * 0.4);
+        var group = new THREE.Object3D();
+        group.add(mesh);
+        scene.add(group);
+        meshArray.push({
+            meshGroup: group,
+            name: 'tcl_c'
+        });
     });
-  
-   Leia_LoadSTLModel({
+
+    Leia_LoadSTLModel({
         path: 'resource/tcl_l.stl',
-        color:0xff0000
-    },function(mesh){
-      mesh.scale.set(sizeM, sizeM, sizeM*0.4);
-      var group = new THREE.Object3D();
-      group.add(mesh);
-      scene.add(group);
-      meshArray.push({
-        meshGroup: group,
-        name: 'tcl_l'
-      });
+        color: 0xff0000
+    }, function(mesh) {
+        mesh.scale.set(sizeM, sizeM, sizeM * 0.4);
+        var group = new THREE.Object3D();
+        group.add(mesh);
+        scene.add(group);
+        meshArray.push({
+            meshGroup: group,
+            name: 'tcl_l'
+        });
     });
 
     var worldTexture = new THREE.ImageUtils.loadTexture('resource/world_texture.jpg');
@@ -132,8 +132,8 @@ function addObjectsToScene() {
     worldTexture.repeat.set(1, 1);
     var worldMaterial = new THREE.MeshPhongMaterial({
         map: worldTexture,
-        bumpMap   : THREE.ImageUtils.loadTexture('resource/world_elevation.jpg'),
-        bumpScale : 1.00,
+        bumpMap: THREE.ImageUtils.loadTexture('resource/world_elevation.jpg'),
+        bumpScale: 1.00,
         specularMap: THREE.ImageUtils.loadTexture('resource/world_water.png'),
         specular: new THREE.Color('grey'),
         color: 0xffdd99
@@ -145,7 +145,7 @@ function addObjectsToScene() {
     scene.add(world);
     world.matrixWorld.elements[10] = 0.1;
     world.matrixWorldNeedsUpdate = true;
-    for (var q = 1; q<worldGeometry.vertices.length; q++) {
+    for (var q = 1; q < worldGeometry.vertices.length; q++) {
         worldGeometry.vertices[q].z *= 0.5;
     }
 
@@ -188,14 +188,14 @@ function createText(parameters) {
 
 function addLights() {
     //Add Lights Here
-    var light = new THREE.SpotLight(0xffffff);
-    light.position.set(0, 60, 60);
-    light.shadowCameraVisible = false;
-    light.castShadow = true;
-    light.shadowMapWidth = light.shadowMapHeight = 256;
-    light.shadowDarkness = 0.7;
-    scene.add(light);
-
-    var ambientLight = new THREE.AmbientLight(0x222222);
+    var spotLight = new THREE.SpotLight(0xffffff);
+   
+    spotLight.position.set(70, 70, 70);
+    spotLight.shadowCameraVisible = false;
+    spotLight.castShadow = true;
+    spotLight.shadowMapWidth = spotLight.shadowMapHeight = 512;
+    spotLight.shadowDarkness = 0.7;
+    scene.add(spotLight);
+    var ambientLight = new THREE.AmbientLight(0x444444);
     scene.add(ambientLight);
 }
