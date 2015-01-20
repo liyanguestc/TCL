@@ -1,6 +1,11 @@
 var camera, renderer, scene;
 var meshArray = [];
-
+var world;
+var sizeM = 14;
+var depthCompress = 0.5;
+var radius = 25;
+var z0 = -5;
+var textradius = 1.2*radius;
 head.ready(function() {
     Init();
     animate();
@@ -41,14 +46,23 @@ function Init() {
 
 function animate() {
     requestAnimationFrame(animate);
-
+    var time = LEIA.time;
+    var dangle = 0.5;
     //set mesh animation
     for (var i = 0; i < meshArray.length; i++) {
         var curMeshGroup = meshArray[i].meshGroup;
         switch (meshArray[i].name) {
-            case "helloworld":
-                curMeshGroup.rotation.x = 0.8 * Math.sin(5.0 * LEIA.time);
-                curMeshGroup.rotation.z = 0.6 * 0.6 * Math.sin(3.0 * LEIA.time);
+            case "tcl_t":
+                curMeshGroup.position.set(textradius*Math.cos(time+dangle), 0, depthCompress*textradius*Math.sin(time+dangle)+z0);
+                curMeshGroup.rotation.y = -time-dangle+Math.PI/2;
+                break;
+              case "tcl_c":
+                curMeshGroup.position.set(textradius*Math.cos(time), 0, depthCompress*textradius*Math.sin(time)+z0);
+                curMeshGroup.rotation.y = -time+Math.PI/2;
+                break;
+              case "tcl_l":
+                curMeshGroup.position.set(textradius*Math.cos(time-dangle), 0, depthCompress*textradius*Math.sin(time-dangle)+z0);
+                curMeshGroup.rotation.y = -time+dangle+Math.PI/2;
                 break;
             default:
                 break;
@@ -71,62 +85,67 @@ function animate() {
 function addObjectsToScene() {
     //Add your objects here
     //API to add STL Object
-    /*  Leia_LoadSTLModel({
-        path: 'resource/LEIA1.stl'
+      Leia_LoadSTLModel({
+        path: 'resource/tcl_t.stl'
     },function(mesh){
-      mesh.material.side = THREE.DoubleSide;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      mesh.material.metal = true;
-      mesh.scale.set(60, 60, 60);
-      mesh.position.set(0, 0, 0);
+      mesh.scale.set(14, 14, 14);
       var group = new THREE.Object3D();
       group.add(mesh);
       scene.add(group);
       meshArray.push({
         meshGroup: group,
-        name: 'LEIA1'
+        name: 'tcl_t'
       });
-    });*/
-
-    //Add Text
-    var helloText = createText({
-        text: "Hello",
-        size: 15
     });
-    helloText.position.set(-20, -5, 3);
-    helloText.rotation.set(0, 0, 0);
-    helloText.castShadow = true;
-    helloText.receiveShadow = true;
-    var helloGroup = new THREE.Object3D();
-    helloGroup.add(helloText);
-    scene.add(helloGroup);
-    meshArray.push({
-        meshGroup: helloGroup,
-        name: "helloworld"
-    });
-
-    //add background texture
-    var backgroundPlane = Leia_createTexturePlane({
-        filename: 'resource/world-map-background2.jpg',
-        width: 100,
-        height: 75
-    });
-    backgroundPlane.position.z = -8;
-    backgroundPlane.castShadow = false;
-    backgroundPlane.receiveShadow = true;
-    scene.add(backgroundPlane);
   
-  //add center plane
-   var centerPlane = Leia_createTexturePlane({
-        filename: 'resource/crack001.png',
-        width: 100,
-        height: 75,
-        transparent:true
-     
+   Leia_LoadSTLModel({
+        path: 'resource/tcl_c.stl'
+    },function(mesh){
+      mesh.scale.set(sizeM, sizeM, sizeM*0.4);
+      var group = new THREE.Object3D();
+      group.add(mesh);
+      scene.add(group);
+      meshArray.push({
+        meshGroup: group,
+        name: 'tcl_c'
+      });
     });
-    centerPlane.position.z = 0;
-    scene.add(centerPlane);
+  
+   Leia_LoadSTLModel({
+        path: 'resource/tcl_l.stl'
+    },function(mesh){
+      mesh.scale.set(sizeM, sizeM, sizeM*0.4);
+      var group = new THREE.Object3D();
+      group.add(mesh);
+      scene.add(group);
+      meshArray.push({
+        meshGroup: group,
+        name: 'tcl_l'
+      });
+    });
+
+    var worldTexture = new THREE.ImageUtils.loadTexture('resource/world_texture.jpg');
+    worldTexture.wrapS = worldTexture.wrapT = THREE.RepeatWrapping;
+    worldTexture.repeat.set(1, 1);
+    var worldMaterial = new THREE.MeshPhongMaterial({
+        map: worldTexture,
+        bumpMap   : THREE.ImageUtils.loadTexture('resource/world_elevation.jpg'),
+        bumpScale : 1.00,
+        specularMap: THREE.ImageUtils.loadTexture('resource/world_water.png'),
+        specular: new THREE.Color('grey'),
+        color: 0xffdd99
+    });
+    var worldGeometry = new THREE.SphereGeometry(25, 30, 30);
+    world = new THREE.Mesh(worldGeometry, worldMaterial);
+    world.position.z = -5;
+    world.castShadow = true;
+    scene.add(world);
+    world.matrixWorld.elements[10] = 0.1;
+    world.matrixWorldNeedsUpdate = true;
+    for (var q = 1; q<worldGeometry.vertices.length; q++) {
+        worldGeometry.vertices[q].z *= 0.5;
+    }
+
 }
 
 function createText(parameters) {
