@@ -86,7 +86,8 @@ function addObjectsToScene() {
     //Add your objects here
     //API to add STL Object
       Leia_LoadSTLModel({
-        path: 'resource/tcl_t.stl'
+        path: 'resource/tcl_t.stl',
+        color:0xff0000
     },function(mesh){
       mesh.scale.set(14, 14, 14);
       var group = new THREE.Object3D();
@@ -99,7 +100,8 @@ function addObjectsToScene() {
     });
   
    Leia_LoadSTLModel({
-        path: 'resource/tcl_c.stl'
+        path: 'resource/tcl_c.stl',
+        color:0xff0000
     },function(mesh){
       mesh.scale.set(sizeM, sizeM, sizeM*0.4);
       var group = new THREE.Object3D();
@@ -112,7 +114,8 @@ function addObjectsToScene() {
     });
   
    Leia_LoadSTLModel({
-        path: 'resource/tcl_l.stl'
+        path: 'resource/tcl_l.stl',
+        color:0xff0000
     },function(mesh){
       mesh.scale.set(sizeM, sizeM, sizeM*0.4);
       var group = new THREE.Object3D();
